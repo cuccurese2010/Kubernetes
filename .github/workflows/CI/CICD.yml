@@ -11,5 +11,5 @@ jobs:
       - name: Build and push the image
         run: |
           docker login --username cuccurese2010 --password ${{ secrets.GH_PAT }} ghcr.io
-          docker build . --file Dockerfile --tag ghcr.io/cuccurese2010/kubernetes:latest
-          docker push ghcr.io/cuccurese2010/kubernetes:latest
+          docker build . --file Dockerfile --tag ghcr.io/cuccurese2010/test:latest
+          docker push ghcr.io/cuccurese2010/test:latest
