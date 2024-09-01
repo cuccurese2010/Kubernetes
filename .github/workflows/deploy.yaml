@@ -2,7 +2,6 @@ name: Deploy to Kubernetes
 
 on:
   push
-   
 
 jobs:
   deploy:
@@ -33,11 +32,6 @@ jobs:
           echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
 
       - name: Deploy to Kubernetes
-        uses: appleboy/k8s-action@v0.1.8  # Usa l'ultima versione disponibile
-        with:
-          kubeconfig: $HOME/.kube/config
-          namespace: default  # Sostituisci con il tuo namespace se necessario
-          manifests: |
-            ./deployment.yaml
-          images: |
-            ghcr.io/cuccurese2010/Kubernetes/my-app:${{ github.sha }}
+        run: |
+          kubectl apply -f ./deployment.yaml
+          kubectl set image deployment/my-app my-app=ghcr.io/cuccurese2010/Kubernetes/my-app:${{ github.sha }}
