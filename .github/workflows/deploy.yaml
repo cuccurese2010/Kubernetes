@@ -1,0 +1,43 @@
+name: Deploy to Kubernetes
+
+on:
+  push
+   
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GH_PAT }}
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t ghcr.io/cuccurese2010/Kubernetes/my-app:${{ github.sha }} .
+          docker push ghcr.io/cuccurese2010/Kubernetes/my-app:${{ github.sha }}
+
+      - name: Set up Kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+
+      - name: Deploy to Kubernetes
+        uses: appleboy/k8s-action@v0.1.8  # Usa l'ultima versione disponibile
+        with:
+          kubeconfig: $HOME/.kube/config
+          namespace: default  # Sostituisci con il tuo namespace se necessario
+          manifests: |
+            ./deployment.yaml
+          images: |
+            ghcr.io/cuccurese2010/Kubernetes/my-app:${{ github.sha }}
