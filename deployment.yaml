@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: my-app
-        image: ghcr.io/<tuo-username>/my-app:latest
+        image: ghcr.io/cuccurese2010/test:latest
         ports:
         - containerPort: 80
       imagePullSecrets:
