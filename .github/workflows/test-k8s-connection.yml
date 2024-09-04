@@ -19,4 +19,4 @@ jobs:
         echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
 
     - name: Verify connection to Kubernetes
-      run: kubectl get nodes
+      run: kubectl get nodes --insecure-skip-tls-verify=true
