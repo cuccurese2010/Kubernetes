@@ -2,21 +2,17 @@ name: Test Kubernetes Connection
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   test-connection:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    - name: Setup kubeconfig
+    - uses: actions/checkout@v3
+    - name: Set up kubeconfig
       run: |
-        mkdir -p $HOME/.kube
-        echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
-
-    - name: Verify connection to Kubernetes
-      run: kubectl get nodes --insecure-skip-tls-verify=true
+        mkdir -p ~/.kube
+        echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > ~/.kube/config
+        sed -i "s/https:\/\/d4ea-76-77-137-195.ngrok-free.app/https:\/\/10.0.2.100:6443/g" ~/.kube/config
+    - name: Test connection
+      run: kubectl get nodes
