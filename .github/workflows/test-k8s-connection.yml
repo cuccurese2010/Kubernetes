@@ -1,0 +1,22 @@
+name: Test Kubernetes Connection
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test-connection:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup kubeconfig
+      run: |
+        mkdir -p $HOME/.kube
+        echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+
+    - name: Verify connection to Kubernetes
+      run: kubectl get nodes
