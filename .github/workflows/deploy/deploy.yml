@@ -28,10 +28,10 @@ jobs:
           docker push ghcr.io/cuccurese2010/test:latest
 
 
-      - name: Set up Kubeconfig
+       - name: Set up Kubeconfig
         run: |
-          mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > ~/.kube/config
+          kubectl config set-cluster kubernetes --server=https://d4ea-76-77-137-195.ngrok-free.app
 
       - name: Deploy to Kubernetes
         run: |
