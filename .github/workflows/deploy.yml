@@ -34,7 +34,7 @@ jobs:
 
       - name: Set up Kubeconfig
         run: |
-          echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > ~/.kube/config
+          echo "${{ secrets.KUBECONFIG }}" | base64 --decode > ~/.kube/config
           kubectl config set-cluster kubernetes --server=https://d4ea-76-77-137-195.ngrok-free.app
 
       - name: Deploy to Kubernetes
