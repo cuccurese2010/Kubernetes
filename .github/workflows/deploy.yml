@@ -1,7 +1,9 @@
 name: Deploy to Kubernetes
 
 on:
-  push 
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
@@ -23,12 +25,14 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker login --username cuccurese2010 --password ${{ secrets.GH_PAT }} ghcr.io
           docker build --file ${GITHUB_WORKSPACE}/Dockerfile --tag ghcr.io/cuccurese2010/test:latest ${GITHUB_WORKSPACE}
           docker push ghcr.io/cuccurese2010/test:latest
 
+      - name: Create kube directory
+        run: |
+          mkdir -p ~/.kube
 
-       - name: Set up Kubeconfig
+      - name: Set up Kubeconfig
         run: |
           echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > ~/.kube/config
           kubectl config set-cluster kubernetes --server=https://d4ea-76-77-137-195.ngrok-free.app
