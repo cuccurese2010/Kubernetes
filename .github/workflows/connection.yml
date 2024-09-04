@@ -16,13 +16,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Create kube directory
+      - name: Create kubeconfig
         run: |
-          mkdir -p ~/.kube
-
-      - name: Set up Kubeconfig
-        run: |
-          echo "${{ secrets.KUBECONFIG }}" | base64 --decode | sed "s|server: .*|server: https://d4ea-76-77-137-195.ngrok-free.app|" > ~/.kube/config
+         mkdir ${HOME}/.kube
+         echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > ${HOME}/.kube/config
+         cat ${HOME}/.kube/config
 
       - name: Test Kubernetes Connection
         run: |
