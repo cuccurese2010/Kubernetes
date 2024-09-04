@@ -1,18 +1,29 @@
-name: Test Kubernetes Connection
+name: Deploy to Kubernetes
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
-  test-connection:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up kubeconfig
-      run: |
-        mkdir -p ~/.kube
-        echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > ~/.kube/config
-        sed -i "s/https:\/\/d4ea-76-77-137-195.ngrok-free.app/https:\/\/10.0.2.100:6443/g" ~/.kube/config
-    - name: Test connection
-      run: kubectl get nodes
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Kubeconfig
+        run: |
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > ~/.kube/config
+          kubectl config set-cluster kubernetes --server=https://d4ea-76-77-137-195.ngrok-free.app
+          
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v1
+        with:
+          version: 'latest'
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f k8s/deployment.yaml
+          kubectl apply -f k8s/service.yaml
